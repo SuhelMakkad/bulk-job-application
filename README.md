@@ -81,7 +81,7 @@ const RATE_LIMIT = {
 1. Run the script:
 
 ```bash
-bun run email-sender.ts
+bun run src/index.ts
 ```
 
 2. The script will:
