@@ -87,7 +87,7 @@ bun run email-sender.ts
 2. The script will:
    - Read emails from `data/recruiters.csv`
    - Send emails using AWS SES
-   - Generate a results CSV file named `data/email-campaign-results-[timestamp].csv`
+   - Generate a results CSV file named `data/email-results-[timestamp].csv`
 
 ## Output
 
