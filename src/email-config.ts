@@ -1,7 +1,7 @@
 import type { SendEmailCommandInput } from "@aws-sdk/client-ses";
 
 const EMAIL_CONFIG = {
-  formName: "Suhel Makkad <makadsuhel11@gmail.com>",
+  source: "Suhel Makkad <me@suhelmakkad.com>",
   replyTo: "makadsuhel11@gmail.com",
   from: "me@suhelmakkad.com",
   subject: "Your Subject Line Here",
@@ -16,7 +16,7 @@ Your Name
 
 export const getEmailParams = (toEmail: string): SendEmailCommandInput => {
   return {
-    Source: `${EMAIL_CONFIG.formName} <${EMAIL_CONFIG.from}>`,
+    Source: EMAIL_CONFIG.source,
     ReplyToAddresses: [EMAIL_CONFIG.replyTo],
     Destination: {
       ToAddresses: [toEmail],
