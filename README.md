@@ -98,7 +98,7 @@ The script generates a detailed CSV report with the following information for ea
 - Timestamp
 - Error message (if any)
 
-Example output file: `data/email-campaign-results-2024-12-22T15-30-45-000Z.csv`
+Example output file: `data/email-results-2024-12-22T15-30-45-000Z.csv`
 
 ## Error Handling
 
