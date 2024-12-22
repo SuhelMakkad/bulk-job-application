@@ -1,0 +1,16 @@
+{
+  "name": "bulk-job-email",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.716.0",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2"
+  }
+}
