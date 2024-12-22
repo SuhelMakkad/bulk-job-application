@@ -14,7 +14,7 @@ This TypeScript script allows you to send bulk emails to a list of recruiters us
 1. Clone the repository and install dependencies:
 
 ```bash
-git clone [bulk-job-application](https://github.com/SuhelMakkad/bulk-job-application)
+git clone https://github.com/SuhelMakkad/bulk-job-application
 cd bulk-job-application
 bun install
 ```
