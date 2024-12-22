@@ -1,7 +1,7 @@
 import type { SendEmailCommandInput } from "@aws-sdk/client-ses";
 
 const EMAIL_CONFIG = {
-  formName: "Suhel Makkad",
+  formName: "Suhel Makkad <makadsuhel11@gmail.com>",
   replyTo: "makadsuhel11@gmail.com",
   from: "me@suhelmakkad.com",
   subject: "Your Subject Line Here",
