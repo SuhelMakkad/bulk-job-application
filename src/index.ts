@@ -66,9 +66,8 @@ const saveResults = async (results: EmailResult[]) => {
   });
 };
 
-const processEmails = async (filePath: string) => {
+const readCsvData = async (filePath: string) => {
   const results: EmailRecord[] = [];
-  const emailResults: EmailResult[] = [];
 
   const parser = createReadStream(filePath).pipe(
     parse({
@@ -81,6 +80,13 @@ const processEmails = async (filePath: string) => {
   for await (const record of parser) {
     results.push(record as EmailRecord);
   }
+
+  return results;
+};
+
+const processEmails = async (filePath: string) => {
+  const results: EmailRecord[] = await readCsvData(filePath);
+  const emailResults: EmailResult[] = [];
 
   console.log(`📊 Found ${results.length} email addresses to process`);
 
@@ -133,6 +139,7 @@ const main = async () => {
     console.log("🚀 Starting email campaign...");
     await processEmails(CSV_FILE_PATH);
     console.log("✨ Email campaign completed!");
+    process.exit(0);
   } catch (error) {
     console.error("💥 Fatal error:", error);
     process.exit(1);
