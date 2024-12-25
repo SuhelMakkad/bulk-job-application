@@ -5,6 +5,7 @@ import { stringify } from "csv-stringify";
 import { pipeline } from "stream/promises";
 import { getEmailParams } from "./email-config";
 import { sesClient } from "./ses";
+import { isValidEmail } from "./utils";
 
 const CSV_FILE_PATH = "./csv/recruiters.csv";
 const BLACKLIST_CSV_PATH = "./csv/blacklist.csv";
@@ -30,6 +31,10 @@ type EmailResult = {
 };
 
 const sendEmail = async (toEmail: string) => {
+  if (!isValidEmail(toEmail)) {
+    throw new Error(`Invalid email address: ${toEmail}`);
+  }
+
   const params = getEmailParams(toEmail);
 
   try {
