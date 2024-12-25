@@ -7,9 +7,6 @@ import { getEmailParams } from "./email-config";
 import { sesClient } from "./ses";
 import { isValidEmail } from "./utils";
 
-const CSV_FILE_PATH = "./csv/recruiters.csv";
-const BLACKLIST_CSV_PATH = "./csv/blacklist.csv";
-
 // Rate limiting configuration (to avoid hitting AWS SES limits)
 const RATE_LIMIT = {
   maxEmailsPerSecond: 14, // AWS SES default limit is 14 emails/second
@@ -83,7 +80,9 @@ const readCsvData = async (filePath: string) => {
   );
 
   for await (const record of parser) {
-    results.push(record as EmailRecord);
+    if (isValidEmail(record.email)) {
+      results.push(record as EmailRecord);
+    }
   }
 
   return results;
@@ -170,6 +169,9 @@ const processEmails = async (filePath: string, blacklistPath?: string) => {
 };
 
 const main = async () => {
+  const CSV_FILE_PATH = "./csv/recruiters.csv";
+  const BLACKLIST_CSV_PATH = "./csv/blacklist.csv";
+
   try {
     console.log("🚀 Starting email campaign...");
     await processEmails(CSV_FILE_PATH, BLACKLIST_CSV_PATH);
