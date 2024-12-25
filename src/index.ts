@@ -7,6 +7,7 @@ import { getEmailParams } from "./email-config";
 import { sesClient } from "./ses";
 
 const CSV_FILE_PATH = "./csv/recruiters.csv";
+const BLACKLIST_CSV_PATH = "./csv/blacklist.csv";
 
 // Rate limiting configuration (to avoid hitting AWS SES limits)
 const RATE_LIMIT = {
@@ -68,7 +69,6 @@ const saveResults = async (results: EmailResult[]) => {
 
 const readCsvData = async (filePath: string) => {
   const results: EmailRecord[] = [];
-
   const parser = createReadStream(filePath).pipe(
     parse({
       columns: true,
@@ -84,12 +84,42 @@ const readCsvData = async (filePath: string) => {
   return results;
 };
 
-const processEmails = async (filePath: string) => {
-  const results: EmailRecord[] = await readCsvData(filePath);
+const getBlacklistedEmails = async (filePath?: string) => {
+  const blacklist: Set<string> = new Set();
+  if (!filePath) {
+    return blacklist;
+  }
+
+  const parser = createReadStream(filePath).pipe(
+    parse({
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+    })
+  );
+
+  const columnKey = "email";
+
+  for await (const record of parser) {
+    blacklist.add(record[columnKey].toLowerCase());
+  }
+
+  return blacklist;
+};
+
+const processEmails = async (filePath: string, blacklistPath?: string) => {
+  const [resultsFromCsv, blacklist] = await Promise.all([
+    readCsvData(filePath),
+    getBlacklistedEmails(blacklistPath),
+  ]);
+
+  const results = resultsFromCsv.filter((record) => !blacklist.has(record.email.toLowerCase()));
+
+  console.log(
+    `📊 Found ${resultsFromCsv.length} email addresses, ${results.length} after filtering blacklisted emails`
+  );
+
   const emailResults: EmailResult[] = [];
-
-  console.log(`📊 Found ${results.length} email addresses to process`);
-
   let successCount = 0;
   let failureCount = 0;
 
@@ -137,7 +167,7 @@ const processEmails = async (filePath: string) => {
 const main = async () => {
   try {
     console.log("🚀 Starting email campaign...");
-    await processEmails(CSV_FILE_PATH);
+    await processEmails(CSV_FILE_PATH, BLACKLIST_CSV_PATH);
     console.log("✨ Email campaign completed!");
     process.exit(0);
   } catch (error) {
